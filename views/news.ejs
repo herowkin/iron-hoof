@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IRONHOOF News</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="hero news-hero">
+    <%- include('partals/site-nav', { brand: 'IRONHOOF NEWS', showApply: true, canAccessAdminPanel, isReporter }) %>
+
+    <section class="hero-content">
+      <p class="hero-text">
+        Official PDF dispatches, press drops, and field reports from the IRONHOOF newsroom.
+      </p>
+    </section>
+  </header>
+
+  <main>
+    <section class="card">
+      <h1>News Section</h1>
+      <p class="muted">Open each report directly on the site or download the PDF for reference.</p>
+
+      <% if (newsPosts.length === 0) { %>
+        <p>No news posts have been published yet.</p>
+      <% } else { %>
+        <div class="news-grid">
+          <% newsPosts.forEach(post => { %>
+            <article class="news-card">
+              <p class="eyebrow"><%= post.posted_role %> • <%= post.posted_by %></p>
+              <h2><%= post.title %></h2>
+              <p><%= post.summary || 'No summary provided.' %></p>
+              <p class="muted"><%= new Date(post.created_at).toLocaleString() %></p>
+              <a class="mini-card" href="/news/<%= post.id %>">Open PDF Report</a>
+            </article>
+          <% }) %>
+        </div>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

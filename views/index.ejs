@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IRONHOOF | AD FINEM MUNDI</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="hero">
+    <%- include('partals/site-nav', { brand: 'IRONHOOF', showApply: true, canAccessAdminPanel, isReporter }) %>
+
+    <section class="hero-content">
+      <img class="hero-logo" src="/images/Ironhoof.png" alt="IRONHOOF Logo">
+
+      <p class="hero-text">
+        A Cobblemon company managing ranch operations, mining work, logging contracts,
+        construction projects, transport jobs, and sales records.
+      </p>
+    </section>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>About IRONHOOF</h2>
+      <p><%= info.about %></p>
+    </section>
+
+    <section class="card">
+      <h2>What We Do</h2>
+      <p><%= info.what_we_do %></p>
+    </section>
+
+    <section class="card">
+      <h2>Divisions</h2>
+      <div class="grid">
+        <a class="mini-card" href="/mining">Ironhoof Mining</a>
+        <a class="mini-card" href="/logging">Ironhoof Logging</a>
+        <a class="mini-card" href="/construction">Ironhoof Construction</a>
+        <a class="mini-card" href="/transport">Ironhoof Transport</a>
+        <a class="mini-card" href="/sales">Ironhoof Sales</a>
+        <a class="mini-card" href="/apply">Apply for a Job</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Executive Staff</h2>
+
+      <div class="employee-grid">
+        <% employees.forEach(employee => { %>
+
+          <div class="employee-card">
+
+            <% if (employee.minecraft_username) { %>
+              <img
+                class="employee-skin"
+                src="https://minotar.net/body/<%= employee.minecraft_username %>/120.png"
+                alt="<%= employee.name %>"
+              >
+            <% } else { %>
+              <img
+                class="employee-skin"
+                src="/images/ironhoof.png"
+                alt="IRONHOOF"
+              >
+            <% } %>
+
+            <h3><%= employee.name %></h3>
+
+            <p class="employee-title">
+              <%= employee.title %>
+            </p>
+
+            <p>
+              <%= employee.description %>
+            </p>
+
+          </div>
+
+        <% }) %>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IRONHOOF Reporter Portal</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="reporter-page">
+  <header class="admin-header reporter-header">
+    <div>
+      <strong>IRONHOOF Reporter Portal</strong>
+      <p class="muted">Logged in as <%= admin.username %> — <%= admin.role %></p>
+    </div>
+
+    <%- include('partals/site-nav', { brand: '', showApply: false, canAccessAdminPanel, isReporter }) %>
+
+    <form method="POST" action="/logout">
+      <button type="submit">Logout</button>
+    </form>
+  </header>
+
+  <main>
+    <section class="card">
+      <h1>News Uploads</h1>
+      <p class="muted">Upload PDF reports here. Admin accounts can use this portal too.</p>
+
+      <% if (error) { %>
+        <p class="error"><%= error %></p>
+      <% } %>
+
+      <% if (success) { %>
+        <p class="success"><%= success %></p>
+      <% } %>
+
+      <form method="POST" action="/reporter/news" enctype="multipart/form-data" class="stacked-form">
+        <label>Report Title</label>
+        <input name="title" type="text" required>
+
+        <label>Summary</label>
+        <textarea name="summary" placeholder="Short summary for the news listing."></textarea>
+
+        <label>PDF File</label>
+        <input name="pdf_file" type="file" accept="application/pdf,.pdf" required>
+
+        <button type="submit">Publish PDF</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Published Reports</h2>
+
+      <% if (newsPosts.length === 0) { %>
+        <p>No reports published yet.</p>
+      <% } else { %>
+        <table class="admin-table compact-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Posted By</th>
+              <th>Summary</th>
+              <th>Open</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% newsPosts.forEach(post => { %>
+              <tr>
+                <td><div class="table-cell-content"><%= post.title %></div></td>
+                <td><div class="table-cell-content"><%= post.posted_by %> (<%= post.posted_role %>)</div></td>
+                <td><div class="table-cell-content"><%= post.summary || 'No summary provided.' %></div></td>
+                <td><a href="/news/<%= post.id %>">Open</a></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= company.name %> | IRONHOOF</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="admin-header">
+    <%- include('partals/site-nav', { brand: 'IRONHOOF', showApply: true, canAccessAdminPanel, isReporter }) %>
+  </header>
+
+  <main>
+    <section class="card">
+      <h1><%= company.name %></h1>
+      <p class="muted">IRONHOOF Division</p>
+      <p><%= company.description %></p>
+
+      <h2>Services</h2>
+      <p><%= company.services %></p>
+    </section>
+
+    <section class="card">
+      <h2>Company Photos</h2>
+
+      <div class="photo-gallery">
+        <button type="button" onclick="changePhoto(-1)">Previous</button>
+
+        <img
+          id="companyPhoto"
+          class="company-photo"
+          src="/images/companies/mining/crane.png"
+          alt="Ironhoof Mining photo"
+        >
+
+        <button type="button" onclick="changePhoto(1)">Next</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Request Work</h2>
+
+      <% if (success) { %>
+        <p class="success">Request submitted. IRONHOOF administration will review it.</p>
+      <% } %>
+
+      <form method="POST" action="/mining/request" class="stacked-form">
+        <label>Your Name</label>
+        <input name="requester_name" required>
+
+        <label>Contact Info (IGN)</label>
+        <input name="contact" required>
+
+        <label>Job Title</label>
+        <input name="job_title" required>
+
+        <label>Job Details</label>
+        <textarea name="details" required></textarea>
+
+        <button type="submit">Submit Request</button>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    const photos = [
+      '/images/companies/mining/crane.png',
+      '/images/companies/mining/hole.png'
+    ];
+
+    let currentPhoto = 0;
+
+    function changePhoto(direction) {
+      currentPhoto += direction;
+
+      if (currentPhoto < 0) {
+        currentPhoto = photos.length - 1;
+      }
+
+      if (currentPhoto >= photos.length) {
+        currentPhoto = 0;
+      }
+
+      document.getElementById('companyPhoto').src = photos[currentPhoto];
+    }
+  </script>
+</body>
+</html>

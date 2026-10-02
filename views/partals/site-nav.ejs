@@ -1,0 +1,26 @@
+<nav class="site-nav">
+  <a class="nav-brand" href="/"><%= brand || 'IRONHOOF' %></a>
+
+  <div class="site-nav-links">
+    <a href="/">Home</a>
+    <a href="/mining">Mining</a>
+    <a href="/logging">Logging</a>
+    <a href="/construction">Construction</a>
+    <a href="/transport">Transport</a>
+    <a href="/sales">Sales</a>
+    <a href="/news">News</a>
+
+    <% if (showApply !== false) { %>
+      <a href="/apply">Apply</a>
+    <% } %>
+
+    <% if (canAccessAdminPanel) { %>
+      <a class="nav-button" href="/admin">Admin</a>
+      <a class="nav-button" href="/reporter">Reporter</a>
+    <% } else if (isReporter) { %>
+      <a class="nav-button" href="/reporter">Reporter</a>
+    <% } else { %>
+      <a class="nav-button" href="/login">Portal</a>
+    <% } %>
+  </div>
+</nav>

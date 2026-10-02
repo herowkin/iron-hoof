@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IRONHOOF Secure Access</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="login-page">
+
+  <main class="login-box">
+
+    <img class="login-logo"
+         src="/images/Ironhoof.png"
+         alt="IRONHOOF Logo">
+
+    <h1>Executive Access</h1>
+
+    <p class="muted">
+      Authorized personnel only.
+    </p>
+
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+
+    <form method="POST" action="/login">
+
+      <label>Username</label>
+      <input
+        name="username"
+        type="text"
+        required
+        autocomplete="username"
+      />
+
+      <label>Password</label>
+      <input
+        name="password"
+        type="password"
+        required
+        autocomplete="current-password"
+      />
+
+      <button type="submit">
+        Access Records
+      </button>
+
+    </form>
+
+    <a href="/">Return to Corporate Site</a>
+
+  </main>
+
+</body>
+</html>

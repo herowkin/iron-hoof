@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apply for a Job | IRONHOOF</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="admin-header">
+    <%- include('partals/site-nav', { brand: 'IRONHOOF', showApply: true, canAccessAdminPanel, isReporter }) %>
+  </header>
+
+  <main>
+    <section class="card">
+      <h1>Apply for a Job</h1>
+      <p class="muted">Send your application to the IRONHOOF admin team for review.</p>
+
+      <% if (success) { %>
+        <p class="success">Application submitted. IRONHOOF administration will review it.</p>
+      <% } %>
+
+      <form method="POST" action="/apply" class="stacked-form">
+        <label>Full Name</label>
+        <input name="full_name" required>
+
+        <label>Minecraft Username</label>
+        <input name="minecraft_username" placeholder="Your Minecraft username" required>
+
+        <label>Discord Username</label>
+        <input name="discord_username" placeholder="Your Discord username" required>
+
+        <label>Why do you want a job here?</label>
+        <textarea name="why_want_job" placeholder="Tell us why you want to work with IRONHOOF." required></textarea>
+
+        <button type="submit">Submit Application</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IRONHOOF Admin</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header class="admin-header">
+    <div>
+      <strong>IRONHOOF Admin Dashboard</strong>
+      <p class="muted">Logged in as <%= admin.username %> — <%= admin.role %></p>
+    </div>
+
+    <div>
+      <a href="/news">News</a>
+      <a href="/reporter">Reporter Portal</a>
+    </div>
+
+    <form method="POST" action="/logout">
+      <button type="submit">Logout</button>
+    </form>
+  </header>
+
+  <main>
+
+    <section class="card">
+      <h2>Work Request Tickets</h2>
+
+      <form method="GET" action="/admin" class="grid-form">
+        <div>
+          <label>Search Tickets</label>
+          <input name="search" placeholder="Search tickets..." value="<%= search || '' %>">
+        </div>
+
+        <button type="submit">Search</button>
+      </form>
+
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Requester</th>
+            <th>Contact</th>
+            <th>Job</th>
+            <th>Details</th>
+            <th>Status</th>
+            <th>Update</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% tickets.forEach(ticket => { %>
+            <tr>
+              <td><%= ticket.company_name || 'Unknown' %></td>
+              <td><%= ticket.requester_name %></td>
+              <td><%= ticket.contact %></td>
+              <td><%= ticket.job_title %></td>
+              <td class="order-details-cell">
+                <button
+                  type="button"
+                  class="order-details-trigger"
+                  data-order-company="<%= ticket.company_name || 'Unknown' %>"
+                  data-order-requester="<%= ticket.requester_name %>"
+                  data-order-job="<%= ticket.job_title %>"
+                  data-order-details="<%= ticket.details %>"
+                >
+                  View details
+                </button>
+              </td>
+              <td><%= ticket.status %></td>
+              <td>
+                <form method="POST" action="/admin/tickets/<%= ticket.id %>/status">
+                  <select name="status">
+                    <option <%= ticket.status === 'Open' ? 'selected' : '' %>>Open</option>
+                    <option <%= ticket.status === 'In Progress' ? 'selected' : '' %>>In Progress</option>
+                    <option <%= ticket.status === 'Completed' ? 'selected' : '' %>>Completed</option>
+                    <option <%= ticket.status === 'Rejected' ? 'selected' : '' %>>Rejected</option>
+                  </select>
+
+                  <button type="submit">Save</button>
+                </form>
+              </td>
+              <td>
+                <form method="POST" action="/admin/tickets/<%= ticket.id %>/delete">
+                  <button class="danger" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Company Info</h2>
+
+      <form method="POST" action="/admin/info" class="stacked-form">
+        <label>Company Name</label>
+        <input name="company_name" value="<%= info.company_name %>" required>
+
+        <label>Tagline</label>
+        <input name="tagline" value="<%= info.tagline %>" required>
+
+        <label>About</label>
+        <textarea name="about" required><%= info.about %></textarea>
+
+        <label>What We Do</label>
+        <textarea name="what_we_do" required><%= info.what_we_do %></textarea>
+
+        <button type="submit">Save Company Info</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Employees</h2>
+
+      <form method="POST" action="/admin/employees/add" class="grid-form compact-form">
+        <input name="name" placeholder="Name" required>
+        <input name="title" placeholder="Title" required>
+        <input name="description" placeholder="Description" required>
+        <input name="minecraft_username" placeholder="Minecraft Username">
+        <button type="submit">Add Employee</button>
+      </form>
+
+      <table class="admin-table compact-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Save</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% employees.forEach(employee => { %>
+            <tr>
+              <form method="POST" action="/admin/employees/<%= employee.id %>/edit">
+                <td>
+                  <input name="name" value="<%= employee.name %>" required>
+                </td>
+
+                <td>
+                  <input name="title" value="<%= employee.title %>" required>
+                </td>
+
+                <td>
+                  <input name="description" value="<%= employee.description %>" required>
+                </td>
+
+                <td>
+                  <input name="minecraft_username" value="<%= employee.minecraft_username || '' %>" placeholder="Minecraft Username">
+                </td>
+
+                <td>
+                  <button type="submit">Save</button>
+                </td>
+              </form>
+
+              <td>
+                <form method="POST" action="/admin/employees/<%= employee.id %>/delete">
+                  <button class="danger" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Sales Records</h2>
+
+      <form method="POST" action="/admin/sales/add" class="grid-form compact-form">
+        <input name="customer" placeholder="Customer" required>
+        <input name="item" placeholder="Item" required>
+        <input name="category" placeholder="Category" required>
+        <input name="amount" type="number" placeholder="Amount" required>
+        <input name="status" placeholder="Status" required>
+        <input name="notes" placeholder="Notes">
+        <button type="submit">Add Sale</button>
+      </form>
+
+      <table class="admin-table compact-table">
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Item</th>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Notes</th>
+            <th>Save</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% sales.forEach(sale => { %>
+            <tr>
+              <form method="POST" action="/admin/sales/<%= sale.id %>/edit">
+                <td>
+                  <input name="customer" value="<%= sale.customer %>" required>
+                </td>
+
+                <td>
+                  <input name="item" value="<%= sale.item %>" required>
+                </td>
+
+                <td>
+                  <input name="category" value="<%= sale.category %>" required>
+                </td>
+
+                <td>
+                  <input name="amount" type="number" value="<%= sale.amount %>" required>
+                </td>
+
+                <td>
+                  <input name="status" value="<%= sale.status %>" required>
+                </td>
+
+                <td>
+                  <input name="notes" value="<%= sale.notes || '' %>">
+                </td>
+
+                <td>
+                  <button type="submit">Save</button>
+                </td>
+              </form>
+
+              <td>
+                <form method="POST" action="/admin/sales/<%= sale.id %>/delete">
+                  <button class="danger" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Admin Accounts</h2>
+
+      <form method="POST" action="/admin/admins/add" class="grid-form compact-form">
+        <input name="username" placeholder="Username" required>
+        <input name="password" type="password" placeholder="Password" required>
+        <input name="role" placeholder="Role" required>
+        <button type="submit">Create Admin</button>
+      </form>
+
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% admins.forEach(adminUser => { %>
+            <tr>
+              <td><%= adminUser.username %></td>
+              <td><%= adminUser.role %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Reporter Accounts</h2>
+
+      <form method="POST" action="/admin/admins/add" class="grid-form compact-form">
+        <input name="username" placeholder="Username" required>
+        <input name="password" type="password" placeholder="Password" required>
+        <input name="role" type="hidden" value="Reporter">
+        <button type="submit">Create Reporter Account</button>
+      </form>
+
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% reporters.forEach(reporter => { %>
+            <tr>
+              <td><%= reporter.username %></td>
+              <td><%= reporter.role %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <dialog class="order-details-modal" id="order-details-modal">
+    <div class="order-details-modal-header">
+      <div>
+        <p class="muted order-details-eyebrow">Work Request Details</p>
+        <h3 id="order-details-title">Order Details</h3>
+      </div>
+
+      <button type="button" class="order-details-close" data-order-details-close>Close</button>
+    </div>
+
+    <div class="order-details-modal-meta">
+      <div><strong>Company:</strong> <span id="order-details-company"></span></div>
+      <div><strong>Requester:</strong> <span id="order-details-requester"></span></div>
+      <div><strong>Job:</strong> <span id="order-details-job"></span></div>
+    </div>
+
+    <div class="order-details-modal-body" id="order-details-body"></div>
+  </dialog>
+
+    <section class="card">
+      <h2>Job Applications</h2>
+
+      <form method="GET" action="/admin" class="grid-form">
+        <div>
+          <label>Search Applications</label>
+          <input name="search" placeholder="Search applications..." value="<%= search || '' %>">
+        </div>
+
+        <button type="submit">Search</button>
+      </form>
+
+      <table class="admin-table compact-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Minecraft Username</th>
+            <th>Discord Username</th>
+            <th>Why They Want the Job</th>
+            <th>Status</th>
+            <th>Review</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% applications.forEach(application => { %>
+            <tr>
+              <td><div class="table-cell-content"><%= application.full_name %></div></td>
+              <td><div class="table-cell-content"><%= application.minecraft_username || 'Unknown' %></div></td>
+              <td><div class="table-cell-content"><%= application.discord_username || 'Unknown' %></div></td>
+              <td><div class="table-cell-content"><%= application.why_want_job %></div></td>
+              <td><div class="table-cell-content"><%= application.status %></div></td>
+              <td>
+                <form method="POST" action="/admin/applications/<%= application.id %>/status">
+                  <select name="status">
+                    <option <%= application.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                    <option <%= application.status === 'Reviewing' ? 'selected' : '' %>>Reviewing</option>
+                    <option <%= application.status === 'Accepted' ? 'selected' : '' %>>Accepted</option>
+                    <option <%= application.status === 'Rejected' ? 'selected' : '' %>>Rejected</option>
+                  </select>
+
+                  <button type="submit">Save</button>
+                </form>
+              </td>
+              <td>
+                <form method="POST" action="/admin/applications/<%= application.id %>/delete">
+                  <button class="danger" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </section>
+
+  <script>
+  const modal = document.getElementById('order-details-modal');
+  const title = document.getElementById('order-details-title');
+  const company = document.getElementById('order-details-company');
+  const requester = document.getElementById('order-details-requester');
+  const job = document.getElementById('order-details-job');
+  const body = document.getElementById('order-details-body');
+  const closeButton = document.querySelector('[data-order-details-close]');
+
+  document.querySelectorAll('[data-order-details-trigger], .order-details-trigger').forEach(button => {
+    button.addEventListener('click', () => {
+      const orderCompany = button.dataset.orderCompany || 'Unknown';
+      const orderRequester = button.dataset.orderRequester || 'Unknown';
+      const orderJob = button.dataset.orderJob || 'Unknown';
+      const orderDetails = button.dataset.orderDetails || '';
+
+      title.textContent = `${orderJob} details`;
+      company.textContent = orderCompany;
+      requester.textContent = orderRequester;
+      job.textContent = orderJob;
+      body.textContent = orderDetails;
+
+      modal.showModal();
+    });
+  });
+
+  closeButton.addEventListener('click', () => modal.close());
+
+  modal.addEventListener('click', event => {
+    if (event.target === modal) {
+      modal.close();
+    }
+  });
+</script>
+
+</body>
+</html>
